@@ -85,50 +85,46 @@ def main():
 
 
 def shortest_path(source, target):
-    """
-    Returns the shortest list of (movie_id, person_id) pairs
-    that connect the source to the target.
+	"""
+	Returns the shortest list of (movie_id, person_id) pairs
+	that connect the source to the target.
 
-    If no possible path, returns None.
-    """
-    num_explored = 0
-    
+	If no possible path, returns None.
+	"""
 
-    # Initialize frontier to just the starting position , 
-    start = Node(state=start, parent=None, movie=None, person=source)
-    frontier = StackFrontier()
-    frontier.add(start)
+	# Initialize frontier to just the starting position , 
+	start = Node(state=source, parent=None, action=None)
+	frontier = StackFrontier()
+	frontier.add(start)
 
-     # Initialize an empty explored set
-    explored = set()
+	 # Initialize an empty explored set
+	explored = set()
 
-    while  true :
+	while  True :
 
-         if frontier.empty():
-            raise Exception("no solution")
+		if frontier.empty():
+			raise Exception("no solution")
 
-         node = frontier.remove()
-         num_explored += 1
-         # If node is the goal, then we have a solution
-         if node.person_id == target:
-                list_solution = []
-                while node.parent is not None:
-                    list_solution.append((node.movie_id,node.person_id))
-                list_solution.reverse()
-                return list_solution
-         
-         # Mark node as explored
-         explored.add(node.state)
+		node = frontier.remove()
 
-         # Add neighbors id for a given name to frontier
-         for movie_id, person_id in neighbors_for_person(node.person_id):
-                if not frontier.contains_state(node.state) and node.state not in self.explored:
-                    child = Node(state=node.state, parent=node, movie_id=movie_id, person_id= person_id)
-                    frontier.add(child)
+		# Mark node as explored
+		explored.add(node.state)
+
+		# Add neighbors id for a given name to frontier
+		for movie_id, person_id in neighbors_for_person(node.state):
+			if not frontier.contains_state(person_id) and person_id not in explored:
+				if person_id == target:
+					child = Node(state=person_id, parent=node, action = movie_id)
+					list_solution = []
+					while node.parent is not None:
+						list_solution.append((node.movie_id,node.person_id))
+						node = node.parent
+					list_solution.reverse()
+					return list_solution
+			else:
+				frontier.add(Node(state=person_id, parent=node, action = movie_id))
 
 
-    # TODO
-    raise NotImplementedError
 
 
 def person_id_for_name(name):
